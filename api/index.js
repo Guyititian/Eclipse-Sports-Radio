@@ -49,9 +49,9 @@ if (path === “/stream”) {
 if (!streamUrl) return res.status(400).json({ error: “Missing param: url” });
 var decoded = decodeURIComponent(streamUrl);
 return fetch(decoded, { redirect: “follow” })
-.then(function(r) { return r.text(); })
+var m3u = text.match(/^(https?:\/\/[^\s#]+)/m);
 .then(function(text) {
-var m3u = text.match(/^(https?://[^\s#]+)/m);
+var pls = text.match(/File\d+=(https?:\/\/[^\s]+)/);
 if (m3u) return res.status(200).json({ url: m3u[1].trim() });
 var pls = text.match(/File\d+=(https?://[^\s]+)/);
 if (pls) return res.status(200).json({ url: pls[1].trim() });
