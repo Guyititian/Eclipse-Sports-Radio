@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/manifest.json", "destination": "/api/index?path=/manifest.json" },
+    { "source": "/search",        "destination": "/api/index?path=/search" },
+    { "source": "/stream",        "destination": "/api/index?path=/stream" }
+  ]
+}
