@@ -1,0 +1,9 @@
+{
+  "name": "eclipse-sports-radio",
+  "version": "1.0.0",
+  "description": "Eclipse Music addon — live sports radio via TuneIn",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
