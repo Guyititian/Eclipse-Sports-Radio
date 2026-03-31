@@ -1,66 +1,20 @@
 module.exports = function(req, res) {
-res.setHeader(“Access-Control-Allow-Origin”, “*”);
-res.setHeader(“Content-Type”, “application/json”);
-
-var path = req.url.split(”?”)[0];
+res.setHeader("Access-Control-Allow-Origin", "*");
+res.setHeader("Content-Type", "application/json");
+var path = req.url.split("?")[0];
 var q = req.query.q;
-var streamUrl = req.query.url || req.query.id;
-
-if (path === “/manifest.json” || path === “/api/index”) {
-return res.status(200).json({
-id: “com.community.sportsradio”,
-name: “Sports Radio”,
-version: “1.0.0”,
-description: “Search live sports radio stations by team or league.”,
-resources: [“search”, “stream”],
-types: [“track”],
-icon: “https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/120px-Anonymous_emblem.svg.png”
-});
+var su = req.query.url || req.query.id;
+if (path === "/manifest.json" || path === "/api/index") {
+return res.status(200).json({id:"com.community.sportsradio",name:"Sports Radio",version:"1.0.0",description:"Search live sports radio by team or league.",resources:["search","stream"],types:["track"]});
 }
-
-if (path === “/search”) {
-if (!q) return res.status(400).json({ error: “Missing param: q” });
-return fetch(“https://opml.radiotime.com/Search.ashx?query=” + encodeURIComponent(q) + “&types=station&render=json”)
-.then(function(r) { return r.json(); })
-.then(function(data) {
-var items = (data.body || []).filter(function(item) {
-return item.type === “audio” && item.url;
-});
-var tracks = items.slice(0, 20).map(function(item) {
-return {
-id: item.guide_id || encodeURIComponent(item.url),
-title: item.text || “Unknown Station”,
-artist: item.subtext || “Live Radio”,
-album: “Sports Radio”,
-artwork: item.image || null,
-url: item.url,
-duration: 0,
-isLive: true
-};
-});
-return res.status(200).json({ results: tracks });
-})
-.catch(function(err) {
-return res.status(500).json({ error: err.message });
-});
+if (path === "/search") {
+if (!q) return res.status(400).json({error:"missing q"});
+return fetch("https://opml.radiotime.com/Search.ashx?query="+encodeURIComponent(q)+"&types=station&render=json").then(function(r){return r.json();}).then(function(d){var t=(d.body||[]).filter(function(i){return i.type==="audio"&&i.url;}).slice(0,20).map(function(i){return{id:i.guide_id||i.url,title:i.text||"Station",artist:i.subtext||"Live Radio",album:"Sports Radio",artwork:i.image||null,url:i.url,duration:0};});return res.status(200).json({results:t});}).catch(function(e){return res.status(500).json({error:e.message});});
 }
-
-if (path === “/stream”) {
-if (!streamUrl) return res.status(400).json({ error: “Missing param: url” });
-var decoded = decodeURIComponent(streamUrl);
-return fetch(decoded, { redirect: “follow” })
-var m3u = text.match(/^(https?:\/\/[^\s#]+)/m);
-.then(function(text) {
-var pls = text.match(/File\d+=(https?:\/\/[^\s]+)/);
-if (m3u) return res.status(200).json({ url: m3u[1].trim() });
-var pls = text.match(/File\d+=(https?://[^\s]+)/);
-if (pls) return res.status(200).json({ url: pls[1].trim() });
-return res.status(200).json({ url: decoded });
-})
-.catch(function(err) {
-return res.status(500).json({ error: err.message });
-});
+if (path === "/stream") {
+if (!su) return res.status(400).json({error:"missing url"});
+var decoded = decodeURIComponent(su);
+return fetch(decoded,{redirect:"follow"}).then(function(r){return r.text();}).then(function(text){var m=text.match(/^(https?:\/\/[^\s#]+)/m);if(m)return res.status(200).json({url:m[1].trim()});var p=text.match(/File\d+=(https?:\/\/[^\s]+)/);if(p)return res.status(200).json({url:p[1].trim()});return res.status(200).json({url:decoded});}).catch(function(e){return res.status(500).json({error:e.message});});
 }
-
-return res.status(404).json({ error: “Not found” });
+return res.status(404).json({error:"not found"});
 };
