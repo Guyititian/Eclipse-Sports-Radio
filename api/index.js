@@ -9,7 +9,8 @@ return res.status(200).json({id:"com.community.sportsradio",name:"Sports Radio",
 }
 if (path === "/search") {
 if (!q) return res.status(400).json({error:"missing q"});
-return fetch("https://opml.radiotime.com/Search.ashx?query="+encodeURIComponent(q)+"&types=station&render=json").then(function(r){return r.json();}).then(function(d){var t=(d.body||[]).filter(function(i){return i.type==="audio"&&i.url;}).slice(0,20).map(function(i){return{id:i.guide_id||i.url,title:i.text||"Station",artist:i.subtext||"Live Radio",album:"Sports Radio",artwork:i.image||null,url:i.url,duration:0};});return res.status(200).json({results:t});}).catch(function(e){return res.status(500).json({error:e.message});});
+return fetch("https://opml.radiotime.com/Search.ashx?query="+encodeURIComponent(q)+"&types=station&render=json&partnerId=RadioTime"
+).then(function(r){return r.json();}).then(function(d){var t=(d.body||[]).filter(function(i){return i.type==="audio"&&i.url;}).slice(0,20).map(function(i){return{id:i.guide_id||i.url,title:i.text||"Station",artist:i.subtext||"Live Radio",album:"Sports Radio",artwork:i.image||null,url:i.url,duration:0};});return res.status(200).json({results:t});}).catch(function(e){return res.status(500).json({error:e.message});});
 }
 if (path === "/stream") {
 if (!su) return res.status(400).json({error:"missing url"});
