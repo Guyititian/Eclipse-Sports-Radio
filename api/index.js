@@ -4,7 +4,7 @@ res.setHeader("Content-Type", "application/json");
 var path = req.url.split("?")[0];
 var q = req.query.q;
 if (path === "/manifest.json") {
-return res.status(200).json({id:"com.community.sportsradio",name:"Sports Radio",version:"1.0.0",description:"Search live sports radio by team or league.",resources:["search","stream"],types:["track"]});
+return res.status(200).json({id:"com.community.sportsradio",name:"Radio",version:"1.0.0",description:"Search live sports radio stations worldwide.",resources:["search","stream"],types:["track"]});
 }
 if (path === "/search") {
 if (!q) return res.status(400).json({error:"missing q"});
